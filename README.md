@@ -13,7 +13,7 @@
 - Have docker installed in your environment
 
 ### Spin Up the Service
-- use 
+- use this command to start the service
 ```bash
     dotenvx run -- docker-compose -f docker-compose.yml up
 ```
@@ -62,7 +62,12 @@ N/B: Create this folder and mount it before hand.
 - To run these scripts you need to ensure you have activated the environment you created earlier.
 
 ### Docs
-- This directory has two folders
+- This directory has folders hosting sql files and anyb relevant files used in the code
+    #### postges
+    - This will host the postgres schema and any relevant sql queries run on the server
+
+    #### clickhouse 
+    - This will hold the server sceham and relevant sql queries run in it
 
 #### Credentials
 - For purposes of safety and best practice there is no hardcoding of credentials.
