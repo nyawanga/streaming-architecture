@@ -24,7 +24,7 @@ docker ps
 ```
 
 #### Postgres
-- To get postgres ready for streaming service you first need to change the config value for (write ahead log)[https://www.postgresql.org/docs/current/wal-intro.html]
+- To get postgres ready for streaming service you first need to change the config value for [write ahead log](https://www.postgresql.org/docs/current/wal-intro.html)
 - By default it is commented out but it needs to be `wal = logical` otherwise debezium throws an error
 - Make sure to restart the server after this
 - Ensure there is a user who has right for `REPLICATION` best to create a user for the streaming service
@@ -76,4 +76,4 @@ N/B: Create this folder and mount it before hand.
 
 ### TO DO:
 - Could not be able to get the clockhouse sink to work had to write queries on postgres database
-- Find a working solution for the (clickhouse sink connectors)[https://github.com/ClickHouse/clickhouse-kafka-connect]
+- Find a working solution for the [clickhouse sink connectors](https://github.com/ClickHouse/clickhouse-kafka-connect)
