@@ -73,4 +73,6 @@ N/B: Create this folder and mount it before hand.
 - For purposes of safety and best practice there is no hardcoding of credentials.
 - We make use of `.env` file to carry all our creds.
 
-
+### TO DO:
+- Could not be able to get the clockhouse sink to work had to write queries on postgres database
+- Find a working solution for the clickhouse sink connectors
