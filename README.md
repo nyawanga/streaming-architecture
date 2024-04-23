@@ -9,8 +9,8 @@
     pip install --no-cache -r requirements.txt
 ```
 
-### Docker Environemnt
-- Install dotnev or dotnevx to help load env variables when starting the service
+### [Docker](https://www.docker.com/)
+- Install [dotnev](https://www.npmjs.com/package/dotenv) or [dotnevx](https://dotenvx.com/) to help load env variables when starting the service
 - Have docker installed in your environment
 
 ### Spin Up the Service
@@ -23,7 +23,7 @@
 docker ps
 ```
 
-#### Postgres
+#### [Postgres](https://www.postgresql.org/)
 - To get postgres ready for streaming service you first need to change the config value for [write ahead log](https://www.postgresql.org/docs/current/wal-intro.html)
 - By default it is commented out but it needs to be `wal = logical` otherwise debezium throws an error
 - Make sure to restart the server after this
@@ -31,22 +31,22 @@ docker ps
 - Create the relevant tables
 - You can also use pgadmin to do this instead of using the terminal
 
-#### Clickhouse
+#### [Clickhouse](https://clickhouse.com/)
 - Create the relevant table that you want to replicate from postgres and ensure the table names are compartible
 - Make the table engine to be `ENGINE = ReplaceMergeTree`.
 - Ensure it is reachable.
 
-#### Kafka
+#### [Kafka](https://kafka.apache.org)
 - We use only one kafka broker and one zookeeper for this architecture.
 - `kafdrop` provides us a graphical interface for our kafka instance and we can see the topics and messages streaming in from this portal.
 
-#### Debezium
+#### [Debezium](https://debezium.io/)
 - Due to it lacking clickhouse sink connectors we had to try use the custom created connector `clickhouse-kafka-connector`
 - We need to mount the directory that contains the jar file to the debezium container under `/kafka/connector` directory.
 - Choice of directory name is informed by the naming convention of other connectors already installed
 N/B: Create this folder and mount it before hand.
 
-#### Superset
+#### [Superset](https://superset.apache.org)
 - Superset needs to be bale to connect to clickhouse database hence we created a separate `Dockerfile.superset`
 - In the file we indicate installation of relevant connectors used for database interactions
 - We also have to run initial commands when it is started i.e 
@@ -74,6 +74,7 @@ N/B: Create this folder and mount it before hand.
 - For purposes of safety and best practice there is no hardcoding of credentials.
 - We make use of `.env` file to carry all our creds.
 
-### TO DO:
+### Notes:
+- Currently the whole architecture comes up nicely and the docker containers can communicate with each other.
 - Could not be able to get the clockhouse sink to work had to write queries on postgres database
 - Find a working solution for the [clickhouse sink connectors](https://github.com/ClickHouse/clickhouse-kafka-connect)
