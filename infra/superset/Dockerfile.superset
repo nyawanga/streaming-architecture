@@ -1,0 +1,20 @@
+# Extend the official Superset image
+FROM apache/superset
+
+USER root
+
+COPY ./superset/requirements.txt /home/superset/requirements.txt
+
+# install the required packages
+RUN pip install --no-cache-dir -r /home/superset/requirements.txt
+
+COPY ./superset/superset-init.sh /tmp/superset-init.sh
+
+# Make sure the script is executable
+RUN chmod +x /tmp/superset-init.sh
+
+COPY ./superset/superset_config.py /app/
+ENV SUPERSET_CONFIG_PATH /app/superset_config.py
+
+USER superset
+ENTRYPOINT [ "/tmp/superset-init.sh" ]
