@@ -137,5 +137,8 @@ docker-compose-local-airflow.yml
 **/*.env
 **/*.ipynb
 test.*
-./infra/videos.txt
-./infra/run.txt
+infra/videos.txt
+infra/run.txt
+infra/.DS_Store
+infra/data/.DS_Store
+infra/CREATE TABLE public.pgsql
