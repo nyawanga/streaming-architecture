@@ -1,6 +1,6 @@
 ## Architecture
  <code><img src="https://github.com/nyawanga/streaming-architecture/blob/main/docs/streaming.drawio.png?raw=true"/></code>
- 
+
 ### Prerequisite
 #### Python Environment
 - create a python environment  using any tool of choice in my case I used virtualenvwrapper
@@ -76,4 +76,4 @@ N/B: Create this folder and mount it before hand.
 
 ### TO DO:
 - Could not be able to get the clockhouse sink to work had to write queries on postgres database
-- Find a working solution for the clickhouse sink connectors
+- Find a working solution for the (clickhouse sink connectors)[https://github.com/ClickHouse/clickhouse-kafka-connect]
