@@ -1,5 +1,6 @@
 ## Architecture
-
+ <code><img src="https://github.com/nyawanga/streaming-architecture/blob/main/docs/streaming.drawio.png?raw=true"/></code>
+ 
 ### Prerequisite
 #### Python Environment
 - create a python environment  using any tool of choice in my case I used virtualenvwrapper
