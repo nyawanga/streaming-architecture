@@ -1,0 +1,17 @@
+FROM confluentinc/cp-kafka-connect-base:latest
+ENV CONNECT_PLUGIN_PATH: "/usr/share/java,/usr/share/confluent-hub-components"
+
+RUN confluent-hub install --no-prompt debezium/debezium-connector-postgresql:latest && \ 
+    confluent-hub install --no-prompt confluentinc/kafka-connect-jdbc:10.2.5
+USER root
+RUN cd /usr/share/confluent-hub-components/confluentinc-kafka-connect-jdbc/lib && \
+    curl https://repo1.maven.org/maven2/com/clickhouse/clickhouse-jdbc/0.5.0/clickhouse-jdbc-0.5.0.jar -o clickhouse-jdbc-0.5.0.jar && \
+    curl https://repo1.maven.org/maven2/com/clickhouse/clickhouse-cli-client/0.6.0-patch3/clickhouse-cli-client-0.6.0-patch3-shaded.jar -o clickhouse-cli-client-0.6.0-patch3-shaded.jar && \
+    curl https://repo1.maven.org/maven2/com/clickhouse/clickhouse-cli-client/0.6.0-patch3/clickhouse-cli-client-0.6.0-patch3-shaded.jar.asc -o clickhouse-cli-client-0.6.0-patch3-shaded.jar.asc && \
+    curl https://repo1.maven.org/maven2/com/clickhouse/clickhouse-cli-client/0.6.0-patch3/clickhouse-cli-client-0.6.0-patch3-shaded.jar.md5 -o clickhouse-cli-client-0.6.0-patch3-shaded.jar.md5 && \
+    curl https://repo1.maven.org/maven2/com/clickhouse/clickhouse-cli-client/0.6.0-patch3/clickhouse-cli-client-0.6.0-patch3-shaded.jar.sha1 -o clickhouse-cli-client-0.6.0-patch3-shaded.jar.sha1
+
+USER appuser
+
+
+

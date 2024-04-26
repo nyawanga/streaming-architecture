@@ -1,9 +1,9 @@
 
 services:
-  clickhouse:
+  clickhouse-server:
     image: clickhouse/clickhouse-server:24.3.2.23
-    container_name: clickhouse
-    # restart: always
+    container_name: clickhouse-server
+    restart: "unless_stopped"
     env_file:
       - .env
     ports:
@@ -22,6 +22,13 @@ services:
         soft: 262144
         hard: 262144
 
+  clickhouse-client:
+    image: yandex/clickhouse-client
+    depends_on:
+      - clickhouse-server
+    environment:
+      CLICKHOUSE_HOST: clickhouse-server
+
   postgres:
     image: postgres:13
     container_name: postgres
@@ -29,10 +36,9 @@ services:
       - 5433:5432
     networks:
       - franco
-    # command: -c 'config_file=/etc/postgresql/postgresql.conf'
     volumes:
       - ./data/postgres/db_data/:/var/lib/postgresql/data
-      # - ./data/postgres/configs/postgresql.conf:/etc/postgresql/postgresql.conf
+
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "franco"]
       interval: 5s
@@ -42,7 +48,7 @@ services:
 
   pgadmin:
     image: dpage/pgadmin4:latest
-    container_name: padmin
+    container_name: pgadmin
     env_file:
     - .env
     ports:
@@ -103,30 +109,10 @@ services:
       - franco
     environment:
       KAFKA_BROKERCONNECT: kafka:19092
-      # JVM_OPTS: "-Xms16M -Xmx512M -Xss180K -XX:-TieredCompilation -XX:+UseStringDeduplication -noverify"
+      JVM_OPTS: "-Xms16M -Xmx512M -Xss180K -XX:-TieredCompilation -XX:+UseStringDeduplication -noverify"
     depends_on:
       - kafka
 
-  debezium:
-    image: debezium/connect
-    container_name: debezium
-    restart: "no"
-    ports:
-      - 8083:8083
-    environment:
-      BOOTSTRAP_SERVERS: kafka:19092
-      GROUP_ID: 1
-      CONFIG_STORAGE_TOPIC: debezium_configs
-      OFFSET_STORAGE_TOPIC: debezium_offsets
-      STATUS_STORAGE_TOPIC: debezium_statuses
-    depends_on:
-      - kafka
-    networks:
-      - franco
-    volumes:
-      - ./data/debezium/home:/home
-      - ./data/debezium/connect/debezium-connector-clickhouse:/kafka/connect/debezium-connector-clickhouse
-  
   superset:
     container_name: superset
     build:
@@ -145,6 +131,37 @@ services:
       options:
         max-size: 10m
         max-file: "3"
+
+  kafka-connect:
+    build:
+      context: .
+      dockerfile: ./Dockerfile.connect
+    image: franco-connect
+    container_name: kafka-connect
+    ports:
+      - "8082:8083"
+    networks:
+      - franco
+    environment:
+      CONNECT_PLUGIN_PATH: "/usr/share/java,/usr/share/confluent-hub-components"
+      CONNECT_BOOTSTRAP_SERVERS: 'kafka:19092'
+      CONNECT_REST_ADVERTISED_HOST_NAME: 'kafka-connect'
+      CONNECT_GROUP_ID: 1
+      CONNECT_CONFIG_STORAGE_TOPIC: connect_configs
+      CONNECT_OFFSET_STORAGE_TOPIC: connect_offsets
+      CONNECT_STATUS_STORAGE_TOPIC: connect_statuses
+      CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR: 1
+      CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR: 1
+      CONNECT_STATUS_STORAGE_REPLICATION_FACTOR: 1
+      CONNECT_KEY_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
+      CONNECT_VALUE_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
+      CONNECT_KEY_CONVERTER_SCHEMAS_ENABLE: "true"
+      CONNECT_VALUE_CONVERTER_SCHEMAS_ENABLE: "true"
+      CONNECT_INTERNAL_KEY_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
+      CONNECT_INTERNAL_VALUE_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
+
+    depends_on:
+      - kafka 
 
 networks:
   franco:
