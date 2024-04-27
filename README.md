@@ -82,6 +82,10 @@ N/B: Create this folder and mount it before hand.
 - Could not be able to get the clockhouse sink to work had to write queries on postgres database
 - Find a working solution for the [clickhouse sink connectors](https://github.com/ClickHouse/clickhouse-kafka-connect)
 
+### Update
+- Managed to get the kafka to clickhouse working but using [confluentinc/kafka-connect-jdbc](https://www.confluent.io/hub/confluentinc/kafka-connect-jdbc/) connector.
+- Also videos from this guy [Robbin Moffat](https://www.youtube.com/watch?v=vI_L9irU9Pc&t=950s) helped alot in setting the sink connector.
+- See my dockerfile for creating the container `Dockerfile.connect` on how I go about creating the container image and the jdbc connector.
 
 ### Gotchas:
 
