@@ -65,10 +65,13 @@ N/B: Create this folder and mount it before hand.
 ### Docs
 - This directory has folders hosting sql files and anyb relevant files used in the code
     #### postges
-    - This will host the postgres schema and any relevant sql queries run on the server
+    - This will host the postgres schema and any relevant sql queries run on the server.
 
     #### clickhouse 
-    - This will hold the server sceham and relevant sql queries run in it
+    - This will hold the server schema and relevant sql queries run in it.
+
+    #### superset
+    - This will video demo of apache superset and dashboard screenshots.
 
 #### Credentials
 - For purposes of safety and best practice there is no hardcoding of credentials.
