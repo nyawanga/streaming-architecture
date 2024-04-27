@@ -1,0 +1,25 @@
+{
+    "name": "ch-sales_territory-sink-connector",
+    "config": {
+        "connector.class": "io.confluent.connect.jdbc.JdbcSinkConnector",
+        "tasks.max": "1",
+        "topics": "pg-src.franco.sales_territory",
+        "insert.mode": "insert",
+        "batch.size": "100",
+        "table.name.format": "franco.sales_territory",
+        "max.retries": "10",
+        "retry.backoff.ms": "3000",
+        "auto.evolve": "true",
+        "auto.create": "true",
+        "pk.mode": "none",
+        "pk.fields": "sales_territory_id",
+        "jdbcCompliant": "false",
+        "delete.enabled": "false",
+        "transforms": "unwrap,extractInt",
+        "transforms.unwrap.type": "io.debezium.transforms.ExtractNewRecordState",
+        "transforms.unwrap.drop.tombstones": "false",
+        "transforms.unwrap.delete.handling.mode": "none",
+        "transforms.extractInt.type": "org.apache.kafka.connect.transforms.ExtractField$Key",
+        "transforms.extractInt.field": "sales_territory_id"
+    }
+}

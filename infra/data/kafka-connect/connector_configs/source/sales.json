@@ -1,0 +1,25 @@
+{
+    "name": "pg-src-sales-connector",
+    "config": {
+        "connector.class": "io.debezium.connector.postgresql.PostgresConnector",
+        "topic.prefix": "pg-src",
+        "topics": "employee",
+        "tasks.max": "1",
+        "database.hostname": "postgres",
+        "database.port": "5432",
+        "database.user": "franco",
+        "database.password": "franco",
+        "database.dbname": "franco",
+        "database.server.name": "postgres",
+        "table.include.list": "franco.sales,franco.employee,franco.customer,franco.sales_territory",
+        "slot.name": "sales_connector",
+        "plugin.name": "pgoutput",
+        "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+        "value.converter.schemas.enable": "true",
+        "key.converter": "org.apache.kafka.connect.json.JsonConverter",
+        "key.converter.schemas.enable": "true",
+        "snapshot.mode": "initial",
+        "tombstones.on.delete": "false",
+        "decimal.handling.mode": "double"
+    }
+}
