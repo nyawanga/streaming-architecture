@@ -2,12 +2,8 @@ WITH sales AS (
   	SELECT 
   	toInt64(sales.salesterritorykey) AS salesterritorykey,
   	toInt64(sales.customerkey) AS customerkey,
-  	toInt32(sales.order_quantity) AS order_quantity,
-  	toDate(duedate) AS duedate,
-  	COALESCE(toDate(duedate) - toDate(lagInFrame(duedate, 1) OVER(PARTITION BY toInt64(sales.customerkey) ORDER BY duedate ASC )), 0) AS dateslag
-    
+  	toInt32(sales.order_quantity) AS order_quantity
     FROM franco.sales AS sales
-    WHERE CAST(sales.salesterritorykey AS INT) IN (53, 76)
 	),
 groupings AS (
     SELECT 

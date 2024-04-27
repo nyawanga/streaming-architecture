@@ -1,7 +1,7 @@
 WITH main AS (
     SELECT 
     toYear(toDate(duedate)) AS year_,  
-    sum(cast(sales_amount AS Int32)) AS sales_amount
+    sum(toFloat64(sales_amount)) AS sales_amount
     FROM sales
     GROUP BY year_
 ), 
