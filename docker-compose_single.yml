@@ -95,33 +95,6 @@ services:
     networks:
       - franco
 
-  kafka2:
-    image: confluentinc/cp-kafka:7.3.2
-    hostname: kafka2
-    container_name: kafka2
-    ports:
-      - "9093:9092"
-      - "29093:29092"
-      - "10000:9999"
-    environment:
-      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka2:19093,EXTERNAL://${DOCKER_HOST_IP:-127.0.0.1}:9093,DOCKER://host.docker.internal:29093
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT,DOCKER:PLAINTEXT
-      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
-      KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
-      KAFKA_BROKER_ID: 2
-      KAFKA_LOG4J_LOGGERS: "kafka.controller=INFO,kafka.producer.async.DefaultEventHandler=INFO,state.change.logger=INFO"
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
-      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
-      KAFKA_JMX_PORT: 10000
-      KAFKA_JMX_HOSTNAME: ${DOCKER_HOST_IP:-127.0.0.1}
-      KAFKA_AUTHORIZER_CLASS_NAME: kafka.security.authorizer.AclAuthorizer
-      KAFKA_ALLOW_EVERYONE_IF_NO_ACL_FOUND: "true"
-    depends_on:
-      - zookeeper
-    networks:
-      - franco
-
   kafdrop:
     image: obsidiandynamics/kafdrop
     container_name: kafdrop
@@ -131,45 +104,10 @@ services:
     networks:
       - franco
     environment:
-      KAFKA_BROKERCONNECT: "kafka:19092,kafka:19093"
+      KAFKA_BROKERCONNECT: kafka:19092
       # JVM_OPTS: "-Xms16M -Xmx512M -Xss180K -XX:-TieredCompilation -XX:+UseStringDeduplication -noverify"
     depends_on:
       - kafka
-      - kafka2
-
-  kafka-connect:
-    # build:
-    #   context: .
-    #   dockerfile: ./Dockerfile.connect
-    image: franco-connect
-    # image: confluentinc/cp-kafka-connect-base:latest
-    container_name: kafka-connect
-    
-    ports:
-      - "8082:8083"
-    networks:
-      - franco
-    environment:
-      CONNECT_PLUGIN_PATH: "/usr/share/java,/usr/share/confluent-hub-components"
-      CONNECT_BOOTSTRAP_SERVERS: 'kafka:19092,kafka:19093'
-      CONNECT_REST_ADVERTISED_HOST_NAME: 'kafka-connect'
-      CONNECT_GROUP_ID: 1
-      CONNECT_CONFIG_STORAGE_TOPIC: debezium_configs
-      CONNECT_OFFSET_STORAGE_TOPIC: debezium_offsets
-      CONNECT_STATUS_STORAGE_TOPIC: debezium_statuses
-      CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR: 1
-      CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR: 1
-      CONNECT_STATUS_STORAGE_REPLICATION_FACTOR: 1
-      CONNECT_KEY_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
-      CONNECT_VALUE_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
-      CONNECT_KEY_CONVERTER_SCHEMAS_ENABLE: "true"
-      CONNECT_VALUE_CONVERTER_SCHEMAS_ENABLE: "true"
-      CONNECT_INTERNAL_KEY_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
-
-    depends_on:
-      - kafka 
-      - kafka2
- 
 
   superset:
     container_name: superset
@@ -190,6 +128,38 @@ services:
         max-size: 10m
         max-file: "3"
 
+  kafka-connect:
+    # build:
+    #   context: .
+    #   dockerfile: ./Dockerfile.connect
+    image: franco-connect
+    # image: confluentinc/cp-kafka-connect-base:latest
+    container_name: kafka-connect
+    
+    ports:
+      - "8082:8083"
+    networks:
+      - franco
+    environment:
+      CONNECT_PLUGIN_PATH: "/usr/share/java,/usr/share/confluent-hub-components"
+      CONNECT_BOOTSTRAP_SERVERS: 'kafka:19092'
+      CONNECT_REST_ADVERTISED_HOST_NAME: 'kafka-connect'
+      CONNECT_GROUP_ID: 1
+      CONNECT_CONFIG_STORAGE_TOPIC: debezium_configs
+      CONNECT_OFFSET_STORAGE_TOPIC: debezium_offsets
+      CONNECT_STATUS_STORAGE_TOPIC: debezium_statuses
+      CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR: 1
+      CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR: 1
+      CONNECT_STATUS_STORAGE_REPLICATION_FACTOR: 1
+      CONNECT_KEY_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
+      CONNECT_VALUE_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
+      CONNECT_KEY_CONVERTER_SCHEMAS_ENABLE: "true"
+      CONNECT_VALUE_CONVERTER_SCHEMAS_ENABLE: "true"
+      CONNECT_INTERNAL_KEY_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
+
+    depends_on:
+      - kafka 
+ 
 networks:
   franco:
     external: true
