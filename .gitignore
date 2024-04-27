@@ -142,3 +142,4 @@ infra/run.txt
 infra/.DS_Store
 infra/data/.DS_Store
 infra/CREATE TABLE public.pgsql
+!infra/data/kafka-connect/connector_configs/*.json
