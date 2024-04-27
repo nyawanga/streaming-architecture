@@ -1,0 +1,88 @@
+tables:
+  customer:
+    schema: |
+      CREATE TABLE IF NOT EXISTS franco.customer (
+        customer_id Int32,
+        last_name String,
+        address_line1 String,
+        address_line2 String,
+        birth_date String,
+        age String,
+        commute_distance String,
+        customer_alternate_key String,
+        customer_key String,
+        date_first_purchase String,
+        email_address String,
+        english_education String,
+        english_occupation String,
+        french_education String,
+        first_name String,
+        french_occupation String,
+        gender String,
+        house_owner_flag String,
+        marital_status String,
+        middle_name String,
+        name_style String,
+        number_cars_owned String,
+        number_children_at_home String,
+        phone String,
+        spanish_education String,
+        spanish_occupation String,
+        suffix String,
+        title String,
+        total_children String,
+        yearly_income String
+      )
+      ENGINE = ReplacingMergeTree()
+      ORDER BY (customer_id)
+
+  sales_territory:
+    schema: |
+      CREATE TABLE IF NOT EXISTS franco.sales_territory (
+          sales_territory_id Int32,
+          sales_territory_country String,
+          sales_territory_region String,
+          sales_territory_city String
+      )
+      ENGINE = ReplacingMergeTree()
+      ORDER BY (sales_territory_id)
+
+  employee:
+    schema: |
+      CREATE TABLE IF NOT EXISTS franco.employee (
+          employee_id Int32,
+          employee_name String,
+          employee_territory_region String
+      )
+      ENGINE = ReplacingMergeTree()
+      ORDER BY (employee_id)
+
+  sales:
+    schema: |
+      CREATE TABLE IF NOT EXISTS franco.sales (
+              sales_id Int32,
+              currencykey String,
+              customerkey String,
+              discount_amount String,
+              duedate String,
+              duedatekey String,
+              extended_amount String,
+              freight String,
+              order_date String,
+              order_quantity String,
+              product_standard_cost String,
+              revision_number String,
+              sales_amount String,
+              sales_order_line_number String,
+              sales_order_number String,
+              salesterritorykey String,
+              shipdate String,
+              tax_amt String,
+              total_product_cost String,
+              unit_price String,
+              unit_price_discount_pct String,
+              employee_id Int32
+          )
+          ENGINE = ReplacingMergeTree()
+          ORDER BY (sales_id)
+          PARTITION BY toYYYYMM(toDate(order_date))
