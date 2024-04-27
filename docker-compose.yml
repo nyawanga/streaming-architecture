@@ -15,22 +15,18 @@ services:
       - ./data/clickhouse/db_data:/var/lib/clickhouse/ #- main folder where ClickHouse stores the data
       - ./data/clickhouse/logs:/var/log/clickhouse-server/ #- logs
       - ./data/clickhouse/init:/docker-entrypoint-initdb.d/ # entrypoint
-      # - ./data/clickhouse/configs/config.xml:/etc/clickhouse-server/config.xml
     ulimits:
       nproc: 65535
       nofile:
         soft: 262144
         hard: 262144
 
-  clickhouse-client:
-    image: yandex/clickhouse-client
-    depends_on:
-      - clickhouse-server
-    environment:
-      CLICKHOUSE_HOST: clickhouse-server
-
   postgres:
-    image: postgres:13
+    # image: postgres:13
+    # build:
+    #   context: .
+    #   dockerfile: ./Dockerfile.connect
+    image: franco-postgres
     container_name: postgres
     ports:
       - 5433:5432
@@ -109,7 +105,7 @@ services:
       - franco
     environment:
       KAFKA_BROKERCONNECT: kafka:19092
-      JVM_OPTS: "-Xms16M -Xmx512M -Xss180K -XX:-TieredCompilation -XX:+UseStringDeduplication -noverify"
+      # JVM_OPTS: "-Xms16M -Xmx512M -Xss180K -XX:-TieredCompilation -XX:+UseStringDeduplication -noverify"
     depends_on:
       - kafka
 
@@ -133,11 +129,13 @@ services:
         max-file: "3"
 
   kafka-connect:
-    build:
-      context: .
-      dockerfile: ./Dockerfile.connect
+    # build:
+    #   context: .
+    #   dockerfile: ./Dockerfile.connect
     image: franco-connect
+    # image: confluentinc/cp-kafka-connect-base:latest
     container_name: kafka-connect
+    
     ports:
       - "8082:8083"
     networks:
@@ -147,9 +145,9 @@ services:
       CONNECT_BOOTSTRAP_SERVERS: 'kafka:19092'
       CONNECT_REST_ADVERTISED_HOST_NAME: 'kafka-connect'
       CONNECT_GROUP_ID: 1
-      CONNECT_CONFIG_STORAGE_TOPIC: connect_configs
-      CONNECT_OFFSET_STORAGE_TOPIC: connect_offsets
-      CONNECT_STATUS_STORAGE_TOPIC: connect_statuses
+      CONNECT_CONFIG_STORAGE_TOPIC: debezium_configs
+      CONNECT_OFFSET_STORAGE_TOPIC: debezium_offsets
+      CONNECT_STATUS_STORAGE_TOPIC: debezium_statuses
       CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR: 1
       CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR: 1
       CONNECT_STATUS_STORAGE_REPLICATION_FACTOR: 1
@@ -158,11 +156,10 @@ services:
       CONNECT_KEY_CONVERTER_SCHEMAS_ENABLE: "true"
       CONNECT_VALUE_CONVERTER_SCHEMAS_ENABLE: "true"
       CONNECT_INTERNAL_KEY_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
-      CONNECT_INTERNAL_VALUE_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
 
     depends_on:
       - kafka 
-
+ 
 networks:
   franco:
     external: true

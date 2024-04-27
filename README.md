@@ -78,3 +78,9 @@ N/B: Create this folder and mount it before hand.
 - Currently the whole architecture comes up nicely and the docker containers can communicate with each other.
 - Could not be able to get the clockhouse sink to work had to write queries on postgres database
 - Find a working solution for the [clickhouse sink connectors](https://github.com/ClickHouse/clickhouse-kafka-connect)
+
+
+### Gotchas:
+
+#### Postgres:
+- `Postgres server wal_level property must be 'logical' but is: 'replica'`
