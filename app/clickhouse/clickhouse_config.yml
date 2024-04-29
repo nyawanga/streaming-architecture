@@ -86,3 +86,42 @@ tables:
           ENGINE = ReplacingMergeTree()
           ORDER BY (sales_id)
           PARTITION BY toYYYYMM(toDate(order_date))
+
+    dates_dim:
+      schema: |
+        CREATE TABLE IF NOT EXISTS franco.date_dim (
+            date_key Date,
+            day_of_week Int8,
+            day_name String,
+            day_of_month Int8,
+            day_of_year Int16,
+            week_of_year Int8,
+            month Int8,
+            month_name String,
+            quarter Int8,
+            year Int16,
+            is_weekend UInt8,
+            is_holiday UInt8,
+            holiday_name String
+        ) ENGINE = MergeTree()
+        ORDER BY date_key;
+
+dates_dim_insert:
+  query: |
+    INSERT INTO franco.date_dim
+      SELECT 
+          today() as date_key,
+          toDayOfWeek(today()) as day_of_week,
+          formatDateTime(today(), '%A') as day_name,
+          toDayOfMonth(today()) as day_of_month,
+          toDayOfYear(today()) as day_of_year,
+          toWeek(today()) as week_of_year,
+          toMonth(today()) as month,
+          formatDateTime(today(), '%B') as month_name,
+          toQuarter(today()) as quarter,
+          toYear(today()) as year,
+          if(toDayOfWeek(today()) IN (6, 7), 1, 0) as is_weekend,
+          0 as is_holiday,  -- This needs custom logic to define holidays
+          '' as holiday_name
+      FROM system.numbers
+      WHERE today() BETWEEN '2020-01-01' AND '2030-12-31'

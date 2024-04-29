@@ -2,7 +2,6 @@
 
 import os
 import sys
-from typing import List
 from dotenv import load_dotenv
 
 parent_dir = os.path.join(os.getcwd())
@@ -37,6 +36,12 @@ def main():
             connector.create_table(table_name, table_info["schema"])
     except Exception as e:
         print(f"Error creating table: {e}")
+
+    try:
+        query: str = config["dates_dim_insert"]["query"]
+        connector.query(query)
+    except Exception as e:
+        print(f"Error inserting dates: {e}")
 
 
 if __name__ == "__main__":
