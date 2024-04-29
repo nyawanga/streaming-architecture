@@ -31,3 +31,11 @@ final AS (
 )
 
 SELECT * FROM ranked
+
+
+I use clickhouse to run the query as it was my choise analytical databse for the project.
+The query is supposed to get me the top 100 customers by average spend and time between each purchase.
+I rank the customers first by their average spend followed by average number of days betwee each purchase
+I then group them by the region and limit it to 100.
+I use RANK and not DENSE RANK to get the first 100 customers.
+Because the data was being streamed using kafka and I was not doing som much processing on it I have ton explicitly type cast some of the columns.
