@@ -144,3 +144,4 @@ infra/data/.DS_Store
 infra/CREATE TABLE public.pgsql
 !infra/data/kafka-connect/connector_configs/**/*.json
 !app/lib
+/Users/nyawanga/dev/projects/irembo/streaming-architecture/infra/data/postgres/db_data

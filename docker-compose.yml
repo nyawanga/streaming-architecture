@@ -175,7 +175,7 @@ services:
     container_name: superset
     build:
       context: .
-      dockerfile: ./superset/Dockerfile.superset
+      dockerfile: ./infra/superset/Dockerfile.superset
     env_file:
       - .env
     ports:
